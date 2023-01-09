@@ -1,30 +1,28 @@
+import os
 import openai
 import requests
 
-with open("apikey.txt") as f:    
-    openai.api_key = f.readline().strip()
-    
-print(openai.api_key)
+# Load your API key from an environment variable or secret management service
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 # Set the prompt you want to send me
-prompt = "What is the capital of France?"
+question = "What is the capital of France?"
 
-# Set up the parameters for the request
-model_engine = "text-davinci-002"
-params = {
-    "prompt": prompt,
-    "max_tokens": 2048,
-    "temperature": 0.5,
-    "model": model_engine,
-}
-
-# Make the request to the API
-response = requests.post(
-    f"https://api.openai.com/v1/completions",
-    json=params,
-    headers={"Authorization": f"Bearer {openai.api_key}"}
-)
+response = openai.Completion.create(
+    model="text-davinci-003", 
+    prompt=question, 
+    temperature=0, 
+    #top_p=1,
+    max_tokens=100,
+    echo=True,
+    #n=1,    
+    #logprobs=0,
+    frequency_penalty=0.0,
+    presence_penalty=0.0)
 
 # Print the response
-response_text = response.json()["choices"][0]["text"]    
+response_text = response.choices[0]["text"]    
 print(response_text)
+
+
+
